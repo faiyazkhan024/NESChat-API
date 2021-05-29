@@ -1,0 +1,4 @@
+theme: jekyll-theme-hacker
+title: NESChat API
+description: Chat API using NodeJS, Express, and Socket.io.
+show_downloads: true
