@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  color: #fff;
+  background: #000 url("https://source.unsplash.com/random") no-repeat center
+    center fixed;
+  background-size: cover;
+  font-family: sans-serif;
+}
+
+main {
+  height: 100vh;
+  width: 100vw;
+  font-size: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
