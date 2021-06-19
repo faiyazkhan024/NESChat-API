@@ -10,10 +10,15 @@ const userSchema = Schema({
     type: String,
     required: true,
     unique: true,
+    min: 6,
+    max: 255,
   },
   password: {
     type: String,
     require: true,
+    min: 8,
+    max: 1024,
+    select: false,
   },
 });
 
@@ -32,6 +37,7 @@ userSchema.methods.comparePasswords = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
   } catch (error) {
+    return res.status(400).json(error);
     console.log("🚀 ~ file: user.js ~ line 43 ~ error", error);
   }
 };
