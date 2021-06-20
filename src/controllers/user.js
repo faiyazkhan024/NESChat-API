@@ -18,27 +18,32 @@ const registerUser = async (req, res) => {
   userValidation(user, res);
 
   const userExists = await userModel.findOne({ username: user.username });
-  const newUser = new userModel(user);
-  if (userExists) return loginUser(newUser, res);
+  if (userExists) return loginUser(req, res, userExists);
 
   try {
+    const newUser = new userModel(user);
     await newUser.save();
-    loginUser(newUser, res);
+    loginUser(req, res, newUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-const loginUser = (user, res) => {
-  const password = user.comparePasswords(user.password);
-  if (password) {
-    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    res.header(authToken, token).status(201).json(user);
-  }
+const loginUser = async (req, res, user) => {
+  const password = await user.checkPassword(req.body.password);
+
+  if (!password)
+    return res.status(404).json({ error: "Password does not match" });
+
+  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+  return res.status(201).json({ user, token });
 };
 
 const getUserById = async (req, res) => {
   try {
+    console.log("🚀 ~ file: user.js ~ line 43 ~ loginUser ~ user", user);
+    console.log("🚀 ~ file: user.js ~ line 43 ~ loginUser ~ user", user);
+    console.log("🚀 ~ file: user.js ~ line 43 ~ loginUser ~ user", user);
     const user = await userModel.findById(req.params.id, (error) => {
       if (error) return res.status(404).json({ error });
     });

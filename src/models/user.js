@@ -16,9 +16,9 @@ const userSchema = Schema({
   password: {
     type: String,
     require: true,
+    select: false,
     min: 8,
     max: 1024,
-    select: false,
   },
 });
 
@@ -32,14 +32,18 @@ userSchema.pre(constants.save, function (next) {
   }
 });
 
-userSchema.methods.comparePasswords = async function (password) {
+userSchema.methods.checkPassword = async function (password) {
   if (!password) throw new Error("Passwords is missing");
+
+  const user = await users.findById(this._id).select(constants.password);
+
   try {
-    return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, user.password);
   } catch (error) {
-    return res.status(400).json(error);
-    console.log("🚀 ~ file: user.js ~ line 43 ~ error", error);
+    throw new Error({ ...error, message: "Error comparing password" });
   }
 };
 
-module.exports = mongoose.model(constants.user, userSchema);
+const users = mongoose.model(constants.user, userSchema);
+
+module.exports = users;
